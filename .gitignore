@@ -1,0 +1,28 @@
+# Arquivos de banco de dados
+*.sqlite3
+db.sqlite3
+
+# Arquivos de ambiente virtual
+venv/
+.venv/
+env/
+.env
+
+# Arquivos de cache do Python
+__pycache__/
+*.pyc
+
+# Arquivos de IDE e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+
+# Arquivos de dependências (serão reinstalados com requirements.txt)
+/instance/
+
+# Arquivos de mídia e estáticos (geralmente gerenciados de outra forma em produção)
+/media/
+/static_root/
+
+# Logs
+*.log
