@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-g=p=asrj(tqn@39@!otgb_jl$8&9-1c91n!7^))e$%*=hsy84j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -26,6 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party apps
+    'rest_framework',
+    'drf_yasg',
+    # Local apps
     'resume_app'
 ]
 
@@ -65,7 +69,7 @@ WSGI_APPLICATION = 'curriculo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': r"C:\projeto_pessoal\resume\resume-maker\db.sqlite3",
     }
 }
 

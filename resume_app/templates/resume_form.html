@@ -5,11 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Currículo</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto; }
-        form p { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        :root {
+            --primary: #007bff;
+            --danger: #dc3545;
+            --bg-light: #f9f9f9;
+            --border: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            background: var(--bg-light);
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        form {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+        }
+
+        small { color: #666; }
+
+        hr {
+            margin: 35px 0 20px;
+            border: 0;
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover { transform: translateY(-1px); }
+
+        button[type="submit"] {
+            background: var(--primary);
+            color: #fff;
+            width: 100%;
+            margin-top: 25px;
+            font-size: 1rem;
+        }
+
+        .remove-btn {
+            margin-top: 8px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .section-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .formset-item {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* Esconde checkboxes do DELETE */
+        .formset-item input[type="checkbox"][name$="-DELETE"],
+        .formset-item label[for$="-DELETE"] { display: none; }
     </style>
 </head>
 <body>
@@ -18,11 +120,195 @@
 
     <form method="post">
         {% csrf_token %}
-        
-        {{ form.as_p }}
+
+        <div class="form-group">
+            <label>Nome completo:</label>
+            {{ form.full_name }}
+            {% if form.full_name.help_text %}<small>{{ form.full_name.help_text }}</small>{% endif %}
+            {% if form.full_name.errors %}<div class="error">{{ form.full_name.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>E-mail:</label>
+            {{ form.email }}
+            {% if form.email.help_text %}<small>{{ form.email.help_text }}</small>{% endif %}
+            {% if form.email.errors %}<div class="error">{{ form.email.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Telefone:</label>
+            {{ form.phone }}
+            {% if form.phone.help_text %}<small>{{ form.phone.help_text }}</small>{% endif %}
+            {% if form.phone.errors %}<div class="error">{{ form.phone.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Localização:</label>
+            {{ form.location }}
+            {% if form.location.help_text %}<small>{{ form.location.help_text }}</small>{% endif %}
+            {% if form.location.errors %}<div class="error">{{ form.location.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Site:</label>
+            {{ form.website }}
+            {% if form.website.help_text %}<small>{{ form.website.help_text }}</small>{% endif %}
+            {% if form.website.errors %}<div class="error">{{ form.website.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>LinkedIn:</label>
+            {{ form.linkedin }}
+            {% if form.linkedin.help_text %}<small>{{ form.linkedin.help_text }}</small>{% endif %}
+            {% if form.linkedin.errors %}<div class="error">{{ form.linkedin.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>GitHub:</label>
+            {{ form.github }}
+            {% if form.github.help_text %}<small>{{ form.github.help_text }}</small>{% endif %}
+            {% if form.github.errors %}<div class="error">{{ form.github.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Resumo:</label>
+            {{ form.summary }}
+            {% if form.summary.help_text %}<small>{{ form.summary.help_text }}</small>{% endif %}
+            {% if form.summary.errors %}<div class="error">{{ form.summary.errors }}</div>{% endif %}
+        </div>
+
+        <div class="section-card">
+            <h2>Habilidades</h2>
+            <small>Seção opcional. Adicione suas habilidades conforme necessário.</small>
+            {% if skills_formset %}
+                {{ skills_formset.management_form }}
+                <div id="skills-forms">
+                {% for fs in skills_formset %}
+                    <div class="form-group formset-item">
+                        {{ fs.as_p }}
+                        <button type="button" class="remove-btn" onclick="removeForm(this)">Remover</button>
+                    </div>
+                {% endfor %}
+                </div>
+                <div id="skills-empty-form" style="display:none;">
+                    {{ skills_formset.empty_form.as_p|safe }}
+                </div>
+                <button type="button" onclick="addForm('skills')">Adicionar Habilidade</button>
+            {% endif %}
+        </div>
+
+        <div class="section-card">
+            <h2>Experiência</h2>
+            <small>Seção opcional. Adicione suas experiências profissionais conforme necessário.</small>
+            {% if exp_formset %}
+                {{ exp_formset.management_form }}
+                <div id="experiences-forms">
+                {% for fs in exp_formset %}
+                    <div class="form-group formset-item">
+                        {{ fs.as_p }}
+                        <button type="button" class="remove-btn" onclick="removeForm(this)">Remover</button>
+                    </div>
+                {% endfor %}
+                </div>
+                <div id="experiences-empty-form" style="display:none;">
+                    {{ exp_formset.empty_form.as_p|safe }}
+                </div>
+                <button type="button" onclick="addForm('experiences')">Adicionar Experiência</button>
+            {% endif %}
+        </div>
+
+        <div class="section-card">
+            <h2>Formação</h2>
+            <small>Seção opcional. Adicione sua formação acadêmica conforme necessário.</small>
+            {% if edu_formset %}
+                {{ edu_formset.management_form }}
+                <div id="education-forms">
+                {% for fs in edu_formset %}
+                    <div class="form-group formset-item">
+                        {{ fs.as_p }}
+                        <button type="button" class="remove-btn" onclick="removeForm(this)">Remover</button>
+                    </div>
+                {% endfor %}
+                </div>
+                <div id="education-empty-form" style="display:none;">
+                    {{ edu_formset.empty_form.as_p|safe }}
+                </div>
+                <button type="button" onclick="addForm('education')">Adicionar Formação</button>
+            {% endif %}
+        </div>
+
+        <div class="section-card">
+            <h2>Projetos</h2>
+            <small>Seção opcional. Adicione seus projetos conforme necessário.</small>
+            {% if proj_formset %}
+                {{ proj_formset.management_form }}
+                <div id="projects-forms">
+                {% for fs in proj_formset %}
+                    <div class="form-group formset-item">
+                        {{ fs.as_p }}
+                        <button type="button" class="remove-btn" onclick="removeForm(this)">Remover</button>
+                    </div>
+                {% endfor %}
+                </div>
+                <div id="projects-empty-form" style="display:none;">
+                    {{ proj_formset.empty_form.as_p|safe }}
+                </div>
+                <button type="button" onclick="addForm('projects')">Adicionar Projeto</button>
+            {% endif %}
+        </div>
+
+        <div class="section-card">
+            <h2>Certificações</h2>
+            <small>Seção opcional. Adicione certificações relevantes.</small>
+            {% if cert_formset %}
+                {{ cert_formset.management_form }}
+                <div id="certifications-forms">
+                {% for fs in cert_formset %}
+                    <div class="form-group formset-item">
+                        {{ fs.as_p }}
+                        <button type="button" class="remove-btn" onclick="removeForm(this)">Remover</button>
+                    </div>
+                {% endfor %}
+                </div>
+                <div id="certifications-empty-form" style="display:none;">
+                    {{ cert_formset.empty_form.as_p|safe }}
+                </div>
+                <button type="button" onclick="addForm('certifications')">Adicionar Certificação</button>
+            {% endif %}
+        </div>
 
         <button type="submit">Salvar e Gerar Currículo</button>
     </form>
+
+    <script>
+    function removeForm(button) {
+        var item = button.closest('.formset-item');
+        if (!item) { return; }
+        var delInput = item.querySelector('input[type="checkbox"][name$="-DELETE"]');
+        if (delInput) { delInput.checked = true; }
+        item.style.display = 'none';
+    }
+    function addForm(prefix) {
+        var totalInput = document.getElementById('id_' + prefix + '-TOTAL_FORMS');
+        if (!totalInput) { return; }
+        var index = parseInt(totalInput.value);
+        var container = document.getElementById(prefix + '-forms');
+        var tmplHolder = document.getElementById(prefix + '-empty-form');
+        if (!container || !tmplHolder) { return; }
+        var html = tmplHolder.innerHTML.replace(/__prefix__/g, index);
+        var wrapper = document.createElement('div');
+        wrapper.className = 'form-group formset-item';
+        wrapper.innerHTML = html;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'remove-btn';
+        btn.textContent = 'Remover';
+        btn.onclick = function() { removeForm(btn); };
+        wrapper.appendChild(btn);
+        container.appendChild(wrapper);
+        totalInput.value = index + 1;
+    }
+    </script>
 
 </body>
 </html>

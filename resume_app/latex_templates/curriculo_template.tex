@@ -1,81 +1,316 @@
-\documentclass[letterpaper,10pt]{article}
 
-\usepackage{latexsym}
-\usepackage[empty]{fullpage}
-\usepackage{titlesec}
-\usepackage{marvosym}
-\usepackage[usenames,dvipsnames]{color}
-\usepackage{verbatim}
-\usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr}
-\usepackage[english]{babel}
-\usepackage{tabularx}
-\input{glyphtounicode}
+\documentclass[10pt, letterpaper]{article}
 
-% Font options
-\usepackage[sfdefault]{roboto}  % Sans-serif font
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=2 cm, % seperation between body and page edge from the left
+    right=2 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging
+]{geometry} % for adjusting page geometry
+\usepackage{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{0, 0, 0} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle=[[ resume.full_name|escape_latex ]],
+    pdfauthor=[[ resume.full_name|escape_latex ]],
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
 
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
 
-\addtolength{\oddsidemargin}{-0.5in}
-\addtolength{\evensidemargin}{-0.5in}
-\addtolength{\textwidth}{1in}
-\addtolength{\topmargin}{-.5in}
-\addtolength{\textheight}{1.0in}
+\usepackage{charter}
 
-\urlstyle{same}
-\raggedbottom
+% Some settings:
 \raggedright
-\setlength{\tabcolsep}{0in}
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0.15cm} % set column seperation
+\pagenumbering{gobble} % no page numbering
 
-% Section formatting
-\titleformat{\section}{\Large\bfseries\scshape\raggedright}{}{0em}{}[\titlerule]
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
 
-% Ensure PDF is machine readable
-\pdfgentounicode=1
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
 
-% Custom commands
-\newcommand{\resumeItem}[1]{\item\small{#1}}
-\newcommand{\resumeSubheading}[4]{
-\vspace{-1pt}\item
-  \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-    \textbf{#1} & #2 \\
-    \textit{#3} & \textit{#4} \\
-  \end{tabular*}\vspace{-7pt}
-}
-\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
-\newcommand{\resumeSubHeadingList}{\begin{itemize}[leftmargin=0.15in, label={}]}
-\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0 cm + 0.00001 cm
+    }{
+        0 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{threecolentry}[3][]{
+    \onecolentry
+    \def\thirdColumn{#3}
+    \setcolumnwidth{, \fill, 4.5 cm}
+    \begin{paracol}{3}
+    {\raggedright #2} \switchcolumn
+}{
+    \switchcolumn \raggedleft \thirdColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for three column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+\newcommand{\placelastupdatedtext}{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+    \put(
+        \LenToUnit{\paperwidth-2 cm-0 cm+0.05cm},
+        \LenToUnit{\paperheight-1.0 cm}
+    ){\vtop{{\null}\makebox[0pt][c]{
+        \small\color{gray}\textit{Last updated in September 2024}\hspace{\widthof{Last updated in September 2024}}
+    }}}%
+  }%
+}%
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+
 
 \begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{$|$}
 
-\begin{center}
-  \textbf{\Huge {{ resume.full_name|escape_latex }}} \\
-  \small {{ resume.phone|escape_latex }} $|$ \href{mailto:{{ resume.email }}}{ {{ resume.email|escape_latex }} } $|$
-  \href{https://{{ resume.linkedin }}}{ {{ resume.linkedin|escape_latex }} } $|$
-  \href{https://{{ resume.github }}}{ {{ resume.github|escape_latex }} }
-\end{center}
+    \begin{header}
+        \fontsize{25 pt}{25 pt}\selectfont [[ resume.full_name|escape_latex ]]
 
-\section*{Summary}
-{{ resume.summary|escape_latex }}
+        \vspace{5 pt}
 
-\section{Technical Skills}
-\resumeSubHeadingList
-  {% for skill in skills %}
-    \resumeItem{\textbf{ {{ skill.category|escape_latex }} }: {{ skill.description|escape_latex }} }
-  {% endfor %}
-\resumeSubHeadingListEnd
+        \normalsize
+        \mbox{ [[ resume.location|escape_latex ]] }%
+        \kern 5.0 pt%
+        \AND%
+        \kern 5.0 pt%
+        \mbox{\hrefWithoutArrow{mailto:[[ resume.email ]]}{ [[ resume.email|escape_latex ]] }}%
+        \kern 5.0 pt%
+        \AND%
+        \kern 5.0 pt%
+        \mbox{\hrefWithoutArrow{tel:[[ resume.phone ]]}{ [[ resume.phone|escape_latex ]] }}%
+        \kern 5.0 pt%
+        \AND%
+        \kern 5.0 pt%
+        \mbox{\hrefWithoutArrow{ [[ resume.website ]] }{ [[ resume.website|escape_latex ]] }}%
+        \kern 5.0 pt%
+        \AND%
+        \kern 5.0 pt%
+        \mbox{\hrefWithoutArrow{ [[ linkedin_url ]] }{ [[ linkedin_url|escape_latex ]] }}%
+        \kern 5.0 pt%
+        \AND%
+        \kern 5.0 pt%
+        \mbox{\hrefWithoutArrow{ [[ github_url ]] }{ [[ github_url|escape_latex ]] }}%
+    \end{header}
 
-\section{Projects}
-\resumeSubHeadingList
-  {% for project in projects %}
-    \resumeSubheading
-      { {{ project.title|escape_latex }} }{ {{ project.date_range|escape_latex }} }
-      { {{ project.subtitle|escape_latex }} }{ {{ project.tech_stack|escape_latex }} }
-    \resumeSubHeadingList
-      {% for item in
+    \vspace{5 pt - 0.3 cm}
+
+
+    \section{Resumo}
+
+        \begin{onecolentry}
+            [[ resume.summary|escape_latex ]]
+        \end{onecolentry}
+
+    \section{Formação}
+
+    ((* for edu in education *))
+    ((* set edu_label = (edu.start_date ~ ' – ' ~ edu.end_date) if (edu.start_date or edu.end_date) else edu.date_range *))
+        \begin{twocolentry}{
+            [[ edu_label|escape_latex ]]
+        }
+            \textbf{ [[ edu.institution|escape_latex ]] }, [[ edu.degree|escape_latex ]]
+        \end{twocolentry}
+    ((* endfor *))
+
+
+
+
+    \section{Experiência}
+
+    ((* for exp in experiences *))
+    ((* set exp_label = (exp.start_date ~ ' – ' ~ exp.end_date) if (exp.start_date or exp.end_date) else exp.date_range *))
+        \begin{twocolentry}{
+            [[ exp_label|escape_latex ]]
+        }
+            \textbf{ [[ exp.title|escape_latex ]] }, [[ exp.company|escape_latex ]] -- [[ exp.location|escape_latex ]]
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        ((* if exp.description *))
+        \begin{onecolentry}
+            \begin{highlights}
+                ((* for line in (exp.description|bullet_lines) *))
+                \item [[ line|escape_latex ]]
+                ((* endfor *))
+            \end{highlights}
+        \end{onecolentry}
+        \vspace{0.10 cm}
+        ((* endif *))
+        ((* if exp.items.all() *))
+        \begin{onecolentry}
+            \begin{highlights}
+                ((* for it in exp.items.all() *))
+                \item [[ it.description|escape_latex ]]
+                ((* endfor *))
+            \end{highlights}
+        \end{onecolentry}
+        ((* endif *))
+
+        \vspace{0.2 cm}
+    ((* endfor *))
+
+
+
+
+
+
+
+    \section{Projetos}
+
+    ((* for proj in projects *))
+    ((* set proj_label = (proj.start_date ~ ' – ' ~ proj.end_date) if (proj.start_date or proj.end_date) else proj.date_range *))
+        \begin{twocolentry}{
+            [[ proj_label|escape_latex ]]
+        }
+            \textbf{ [[ proj.title|escape_latex ]] }
+        \end{twocolentry}
+        ((* if proj.url *))
+        \begin{onecolentry}
+            \mbox{\hrefWithoutArrow{ [[ proj.url ]] }{ [[ proj.url|escape_latex ]] }}
+        \end{onecolentry}
+        ((* endif *))
+
+        \vspace{0.10 cm}
+        ((* if proj.items.all() *))
+        \begin{onecolentry}
+            \begin{highlights}
+                ((* for it in proj.items.all() *))
+                \item [[ it.description|escape_latex ]]
+                ((* endfor *))
+            \end{highlights}
+        \end{onecolentry}
+        ((* endif *))
+
+        \vspace{0.2 cm}
+    ((* endfor *))
+
+
+
+
+    \section{Certificações}
+
+    ((* if certifications *))
+    ((* for cert in certifications *))
+        \begin{twocolentry}{
+            [[ cert.date|escape_latex ]]
+        }
+            \textbf{ [[ cert.name|escape_latex ]] }((* if cert.institution *)), [[ cert.institution|escape_latex ]]((* endif *))((* if cert.number *)) -- [[ cert.number|escape_latex ]]((* endif *))
+        \end{twocolentry}
+        \vspace{0.10 cm}
+    ((* endfor *))
+    ((* endif *))
+
+
+    \section{Tecnologias}
+
+    ((* if skills *))
+        \begin{onecolentry}
+            \begin{highlights}
+                ((* for sk in skills *))
+                \item [[ (sk.name or (sk.category ~ ': ' ~ sk.description))|escape_latex ]]
+                ((* endfor *))
+            \end{highlights}
+        \end{onecolentry}
+    ((* endif *))
+
+
+
+
+\end{document}
