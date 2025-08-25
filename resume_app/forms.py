@@ -1,5 +1,5 @@
 from django import forms
-from .models import Resume, Skill, Experience, Education, Project, Certificate
+from .models import Resume, Skill, Experience, Education, Project, Certification
 
 class ResumeForm(forms.ModelForm):
     class Meta:
@@ -10,28 +10,30 @@ class ResumeForm(forms.ModelForm):
 class SkillForm(forms.ModelForm):
     class Meta:
         model = Skill
-        fields = ['name', 'category']
+        fields = ['resume', 'category', 'description']
 
 
 class ExperienceForm(forms.ModelForm):
     class Meta:
         model = Experience
-        fields = ['job_title', 'company', 'location', 'start_date', 'end_date', 'description']
+        # Usamos os nomes de campo EXATOS do models.py
+        fields = ['title', 'company', 'location', 'date_range']
 
 
 class EducationForm(forms.ModelForm):
     class Meta:
         model = Education
-        fields = ['school', 'degree', 'start_date', 'end_date', 'location']
+        # Usamos os nomes de campo EXATOS do models.py
+        fields = ['institution', 'degree', 'location', 'date_range']
 
 
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['title', 'description', 'technologies', 'date']
+        fields = ['resume', 'title', 'date_range', 'subtitle','tech_stack']
 
 
 class CertificateForm(forms.ModelForm):
     class Meta:
-        model = Certificate
-        fields = ['name', 'issuer', 'issue_date']
+        model = Certification
+        fields = ['resume', 'name']

@@ -3,6 +3,8 @@
 from django.contrib import admin
 from django.urls import path
 from resume_app import views
+from django.shortcuts import render, redirect, get_object_or_404 # <-- ADICIONE 'redirect' AQUI
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,6 +14,5 @@ urlpatterns = [
     
     # You can keep this if you want /create/ to also work, or remove it
     path('create/', views.create_resume, name='create_resume'),
-    
-    path('generate_pdf/<int:resume_id>/', views.generate_pdf, name='generate_pdf'),
+    path('generate_pdf/<int:resume_id>/', views.generate_pdf, name='generate_pdf'), # <-- O 'name' é crucial
 ]
